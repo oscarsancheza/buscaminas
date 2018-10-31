@@ -3,12 +3,6 @@ package com.mcc;
 import java.util.Scanner;
 
 public class Main {
-
-  static char[][] tablero;
-  static char[][] minas;
-  static int[][] solucion;
-  static Scanner cap;
-
   public static void main(String[] args) {
     Scanner cap;
     int opc = 0;
@@ -59,19 +53,16 @@ public class Main {
             col = Integer.parseInt(coordenadas[1]);
             totalMinas = Integer.parseInt(coordenadas[2]);
 
-            if (!juego.esPersonalizado(fil, col, totalMinas)) {
-              System.out.println(
-                  "El maximo de filas son:"
-                      + Juego.FILAS_MAXIMO
-                      + "\nEl minimo son:"
-                      + Juego.FILAS_MINIMO
-                      + "\nEl maximo de columnas son:"
-                      + Juego.COLUMNAS_MAXIMO
-                      + "\nEl minimo son:"
-                      + Juego.COLUMNAS_MINIMO
-                      + "\nEl limite de minas son:"
-                      + ((fil * col) - 9)
-                      + "\ny no deben ser menor igual a cero");
+            if (!juego.esTableroValido(fil, col)) {
+              System.out.println("El minimo de filas son:" + Tablero.FILAS_MINIMO);
+              System.out.println("El maximo de filas son:" + Tablero.FILAS_MAXIMO);
+              System.out.println("El minimo de columnas son:" + Tablero.COLUMNAS_MINIMO);
+              System.out.println("El maximo de columnas son:" + Tablero.COLUMNAS_MAXIMO);
+            } else if (!juego.esMinasValidas(fil, col, totalMinas)) {
+              System.out.println("Selecciona un numero valido de minas");
+            } else {
+              juego.personalizado(fil, col, totalMinas);
+              juego.iniciar();
             }
             break;
           case 5:
@@ -85,55 +76,5 @@ public class Main {
         System.out.println("Elija un opcion valida.");
       }
     }
-
-  }
-
-  public static void mostrarTablero() {
-    for (int i = 0; i < tablero.length; i++) {
-      for (int j = 0; j < tablero[0].length; j++) {
-        System.out.print(tablero[i][j] + "\t");
-      }
-      System.out.println();
-    }
-  }
-
-  public static void generarSolucion() {
-    for (int i = 0; i < minas.length; i++) {
-      for (int j = 0; j < minas[0].length; j++) {
-        for (int k = -1; k <= 1; k++) {
-          for (int l = -1; l <= 1; l++) {
-            if ((i + k >= 0)
-                && (j + l >= 0)
-                && (i + k < minas.length)
-                && (j + l < minas[0].length)) {
-              if (minas[i][j] != 'X') {
-                if (minas[i + k][j + l] == 'X') {
-                  solucion[i][j]++;
-                }
-              } else {
-                solucion[i][j] = -1;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-
-
-  public static boolean verficarVictoria(int cantidadMinas) {
-    int posiblesMinas = 0;
-    for (int i = 0; i < tablero.length; i++) {
-      for (int j = 0; j < tablero[0].length; j++) {
-        if (tablero[i][j] == '-') {
-          posiblesMinas++;
-        }
-      }
-    }
-    if (posiblesMinas == cantidadMinas) {
-      return true;
-    }
-    return false;
   }
 }

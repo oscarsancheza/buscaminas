@@ -4,14 +4,10 @@ import java.util.Scanner;
 
 public class Juego {
 
-  public final String REGEX_COORDENADAS = "(^[0-9](,[0-9]+))?$";
+  public final String REGEX_COORDENADAS = "(^[0-9]+(,[0-9]+))?$";
   private Tablero tablero;
 
-  public static final String REGEX_COORDENADAS_MINAS = "(^[0-9](,[0-9]+)(,[0-9]+))?$";
-  public static final int FILAS_MAXIMO = 20;
-  public static final int COLUMNAS_MAXIMO = 20;
-  public static final int FILAS_MINIMO = 4;
-  public static final int COLUMNAS_MINIMO = 4;
+  public static final String REGEX_COORDENADAS_MINAS = "(^[0-9]+(,[0-9]+)(,[0-9]+))?$";
 
   public Juego() {}
 
@@ -56,9 +52,13 @@ public class Juego {
             if (this.tablero.esMina(fil, col)) {
               opc = 4;
               System.out.println("Ha terminado el juego...");
-              this.tablero.mostrarTodos();
+              this.tablero.mostrarMinas();
             } else {
               this.tablero.mostrar(fil, col);
+              if (esGanador()) {
+                System.out.println("Ha ganado la partida!!!");
+                opc = 4;
+              }
             }
             break;
           case 2:
@@ -74,6 +74,10 @@ public class Juego {
 
             this.tablero.agregarBandera(fil, col, (opc == 2));
             this.tablero.mostrar();
+            if (esGanador()) {
+              System.out.println("Ha ganado la partida!!!");
+              opc = 4;
+            }
             break;
           case 4:
             System.out.println("Ha terminado el juego...");
@@ -103,17 +107,20 @@ public class Juego {
     tablero = new Tablero(16, 30, 99);
   }
 
-  public boolean esPersonalizado(int filas, int columnas, int minas) {
-    boolean esPersonalizado = true;
+  public void personalizado(int filas, int columnas, int minas) {
+    tablero = new Tablero(filas, columnas, minas);
+  }
 
-    if ((minas <= 0 || minas >= ((filas * columnas) - 9))
-        || (filas < 0 || filas < FILAS_MINIMO || filas > FILAS_MAXIMO)
-        || (columnas < 0 || columnas < COLUMNAS_MINIMO || columnas > COLUMNAS_MAXIMO)) {
-      esPersonalizado = false;
-    } else {
-      tablero = new Tablero(filas, columnas, minas);
-    }
+  public boolean esTableroValido(int fil, int col) {
+    return ((fil > 0 && fil >= Tablero.FILAS_MINIMO && fil <= Tablero.FILAS_MAXIMO)
+        && (col > 0 && col >= Tablero.COLUMNAS_MINIMO && col <= Tablero.COLUMNAS_MAXIMO));
+  }
 
-    return esPersonalizado;
+  public boolean esGanador() {
+    return (this.tablero != null && this.tablero.esGanador());
+  }
+
+  public boolean esMinasValidas(int fil, int col, int minas) {
+    return (minas > 0 && minas <= ((fil * col) - 9));
   }
 }
