@@ -153,28 +153,11 @@ public class Tablero {
     return (minas > 0 && minas <= ((fil * col) - 9));
   }
 
-  private void revelarCasilla(int fila, int columna) {
-    Casilla casilla = this.casillas[fila][columna];
-
-    if (casilla == null || casilla.esVisible() || casilla.esMina() || casilla.esBandera()) {
-      return;
-    }
-
-    casilla.setEsVisible(true);
-
-    if (casilla.getMinasAlrededor() == 0) {
-      revelarSiguienteCasilla(fila, columna);
-    }
-  }
-
   /**
    * @param fila
    * @param columna
-   * @return arreglo de int donde la posicion
-   * [0][0] = inicioFilas
-   * [0][1] = finFilas
-   * [1][0] = inicioColumnas
-   * [1][1] = finFilas
+   * @return arreglo de int donde la posicion [0][0] = inicioFilas [0][1] = finFilas [1][0] =
+   *     inicioColumnas [1][1] = finFilas
    */
   private int[][] obtenerInicioFinCoordenada(int fila, int columna) {
     int[][] datos = new int[2][2];
@@ -224,6 +207,20 @@ public class Tablero {
     }
 
     return gano;
+  }
+
+  private void revelarCasilla(int fila, int columna) {
+    Casilla casilla = this.casillas[fila][columna];
+
+    if (casilla == null || casilla.esVisible() || casilla.esMina() || casilla.esBandera()) {
+      return;
+    }
+
+    casilla.setEsVisible(true);
+
+    if (casilla.getMinasAlrededor() == 0) {
+      revelarSiguienteCasilla(fila, columna);
+    }
   }
 
   private void revelarSiguienteCasilla(int fila, int columna) {

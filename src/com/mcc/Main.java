@@ -13,7 +13,9 @@ public class Main {
     int col;
     int totalMinas;
 
-    while (opc != 5) {
+    juego = new Juego();
+
+    while (opc != 6) {
 
       System.out.println(
           "Seleccione un nivel:\n"
@@ -21,13 +23,13 @@ public class Main {
               + "2. Intermedio\n"
               + "3. Experto\n"
               + "4. Personalizado\n"
-              + "5. Salir");
+              + "5. mostrarRankings\n"
+              + "6. Salir");
 
       cap = new Scanner(System.in);
 
       try {
         opc = cap.nextInt();
-        juego = new Juego();
 
         switch (opc) {
           case 1:
@@ -66,6 +68,9 @@ public class Main {
             }
             break;
           case 5:
+            juego.mostrarRankings();
+            break;
+          case 6:
             System.out.println("Salio del juego");
             break;
           default:

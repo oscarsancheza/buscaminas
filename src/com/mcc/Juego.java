@@ -1,22 +1,29 @@
 package com.mcc;
 
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Juego {
 
   public final String REGEX_COORDENADAS = "(^[0-9]+(,[0-9]+))?$";
   private Tablero tablero;
+  private Jugador jugador;
+  private List<Jugador> rankings;
 
   public static final String REGEX_COORDENADAS_MINAS = "(^[0-9]+(,[0-9]+)(,[0-9]+))?$";
 
-  public Juego() {}
+  public Juego() {
+    rankings = new ArrayList<>();
+  }
 
   public void iniciar() {
+
     if (this.tablero != null) {
       this.tablero.mostrar();
       this.tablero.ocultar();
     }
 
+    Long millis = System.currentTimeMillis();
     String coordenada;
     String[] coordenadas;
     int fil;
@@ -53,10 +60,15 @@ public class Juego {
               opc = 4;
               System.out.println("Ha terminado el juego...");
               this.tablero.mostrarMinas();
+              System.out.println(
+                  "Score:" + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - millis));
             } else {
               this.tablero.mostrar(fil, col);
               if (esGanador()) {
                 System.out.println("Ha ganado la partida!!!");
+                ingresarGanador(
+                    TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - millis));
+                mostrarRankings();
                 opc = 4;
               }
             }
@@ -76,6 +88,8 @@ public class Juego {
             this.tablero.mostrar();
             if (esGanador()) {
               System.out.println("Ha ganado la partida!!!");
+              ingresarGanador(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - millis));
+              mostrarRankings();
               opc = 4;
             }
             break;
@@ -92,6 +106,32 @@ public class Juego {
       } catch (Exception e) {
         System.out.println("Elija un opcion valida.");
       }
+    }
+  }
+
+  public void ingresarGanador(Long score) {
+    Scanner scanner = new Scanner(System.in);
+    jugador = new Jugador();
+
+    System.out.println("Ingresar nombre Jugador:");
+
+    String nombre = scanner.next();
+    jugador.setNombre(nombre);
+    jugador.setScore(score);
+    rankings.add(jugador);
+  }
+
+  public void mostrarRankings() {
+    if (!rankings.isEmpty()) {
+      rankings.sort(
+          (j1, j2) ->
+              j1.getScore() > j2.getScore() ? 2 : j1.getScore().equals(j2.getScore()) ? 0 : -1);
+
+      for (Jugador item : rankings) {
+        System.out.println(item);
+      }
+    } else {
+      System.out.println("No existe ningun score.");
     }
   }
 
